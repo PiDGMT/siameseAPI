@@ -2,10 +2,10 @@ import torch.nn
 from torchvision import models
 from torchsummary import summary
 
-class Quadruplet(torch.nn.Module):
+class QuadrupletRes(torch.nn.Module):
 
     def __init__(self, cpu = False):
-        super(Quadruplet, self).__init__()
+        super(QuadrupletRes, self).__init__()
         self.cpu = cpu
 
         resnet18 = models.resnet18(pretrained=True)

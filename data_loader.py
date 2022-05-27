@@ -1,6 +1,26 @@
 import random
+import requests
+from io import BytesIO
 from PIL import Image
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import Dataset
+
+def load_image(img_link):
+    image1 = requests.get(img_link)
+    return Image.open(BytesIO(image1.content))
+
+class Pairwise(Dataset):
+    def __init__(self, img1, img2, transform):
+        self.img1 = img1
+        self.img2 = img2
+        self.transform = transform
+
+    def __getitem__(self, index):
+        img1 = self.transform(self.img1)
+        img2 = self.transform(self.img2)
+        return img1, img2
+
+    def __len__(self):
+        return 2
 
 #dataloader for getting triplets from dataset
 class SiameseNetworkDataset(Dataset):
@@ -36,7 +56,6 @@ class SiameseNetworkDataset(Dataset):
             img1 = self.transform(img1)
             img2 = self.transform(img2)
             img3 = self.transform(img3)
-
 
         return img0, img1, img2, img3
     

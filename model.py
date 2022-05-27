@@ -8,9 +8,14 @@ class Quadruplet(torch.nn.Module):
         super(Quadruplet, self).__init__()
         self.cpu = cpu
 
+        resnet18 = models.resnet18(pretrained=True)
+        modules=list(resnet18.children())[:-1]
+
+        self.cnn1_resnet = torch.nn.Sequential(*modules)
+
         if self.cpu:
-            # summary(self.cnn1_resnet, (3, 224, 224))
-            print("cpu")
+            summary(self.cnn1_resnet, (3, 224, 224))
+            #print("cpu")
         else:
             summary(self.cnn1_resnet.cuda(), (3, 224, 224))
 
@@ -41,18 +46,18 @@ class Quadruplet(torch.nn.Module):
 
         # Setting up the Fully Connected Layers
         self.fc1 = torch.nn.Sequential(
-            
+
             #torch.nn.Linear(512, 1024), #resnet
             torch.nn.Linear(512, 1024),
             #torch.nn.Linear(384, 1024),
             torch.nn.ReLU(inplace=True),
-            
+
             torch.nn.Linear(1024, 256),
             torch.nn.ReLU(inplace=True),
-            
+
             torch.nn.Linear(256,2)
         )
-        
+
     def forward_once(self, x):
         # This function will be called for both images
         # Its output is used to determine the similarity
@@ -61,12 +66,18 @@ class Quadruplet(torch.nn.Module):
         output = self.fc1(output)
         return output
 
-    def forward(self, input1, input2, input3, input4):
+    def forward(self, input1, input2, input3 = None, input4 = None):
         # In this function we pass in both images and obtain both vectors
         # which are returned
         output1 = self.forward_once(input1)
         output2 = self.forward_once(input2)
-        output3 = self.forward_once(input3)
-        output4 = self.forward_once(input4)
+        if input3:
+            output3 = self.forward_once(input3)
+        else:
+            output3 = None
+        if input4:
+            output4 = self.forward_once(input4)
+        else:
+            output4 = None
 
         return output1, output2, output3, output4
