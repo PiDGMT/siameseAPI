@@ -8,11 +8,6 @@ class Quadruplet(torch.nn.Module):
         super(Quadruplet, self).__init__()
         self.cpu = cpu
 
-        resnet18 = models.resnet18(pretrained=True)
-        modules=list(resnet18.children())[:-1]
-
-        self.cnn1_resnet = torch.nn.Sequential(*modules)
-
         if self.cpu:
             summary(self.cnn1_resnet, (3, 224, 224))
         else:
