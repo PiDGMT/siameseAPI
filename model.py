@@ -9,7 +9,8 @@ class Quadruplet(torch.nn.Module):
         self.cpu = cpu
 
         if self.cpu:
-            summary(self.cnn1_resnet, (3, 224, 224))
+            # summary(self.cnn1_resnet, (3, 224, 224))
+            print("cpu")
         else:
             summary(self.cnn1_resnet.cuda(), (3, 224, 224))
 
