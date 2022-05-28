@@ -7,8 +7,8 @@ from torchvision import datasets
 from torchvision import transforms
 from torchvision import utils
 
-from data_loader import SiameseNetworkDataset
-from helpers import show_plot, UnNormalize, imshow
+from source.data_loader import SiameseNetworkDataset
+from source.helpers import show_plot, UnNormalize, imshow
 from loss import QuadrupletLoss
 from model import Quadruplet
 

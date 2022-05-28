@@ -4,20 +4,22 @@ from torchsummary import summary
 
 class Quadruplet(torch.nn.Module):
 
-    def __init__(self, cpu = False):
+    def __init__(self, cpu = False, show_summary = True):
         super(Quadruplet, self).__init__()
         self.cpu = cpu
+        self.show_summary = show_summary
 
         resnet18 = models.resnet18(pretrained=True)
         modules=list(resnet18.children())[:-1]
 
         self.cnn1_resnet = torch.nn.Sequential(*modules)
 
-        if self.cpu:
-            summary(self.cnn1_resnet, (3, 224, 224))
-            #print("cpu")
-        else:
-            summary(self.cnn1_resnet.cuda(), (3, 224, 224))
+        if self.show_summary:
+            if self.cpu:
+                summary(self.cnn1_resnet, (3, 224, 224))
+                #print("cpu")
+            else:
+                summary(self.cnn1_resnet.cuda(), (3, 224, 224))
 
         self.cnn1 = torch.nn.Sequential(
             torch.nn.Conv2d(3, 64, kernel_size=3,stride=1),
@@ -39,10 +41,11 @@ class Quadruplet(torch.nn.Module):
             #torch.nn.Flatten()
         )
 
-        if self.cpu:
-            summary(self.cnn1, (3, 48, 48))
-        else:
-            summary(self.cnn1.cuda(), (3,48,48))
+        if self.show_summary:
+            if self.cpu:
+                summary(self.cnn1, (3, 48, 48))
+            else:
+                summary(self.cnn1.cuda(), (3,48,48))
 
         # Setting up the Fully Connected Layers
         self.fc1 = torch.nn.Sequential(

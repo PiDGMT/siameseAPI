@@ -18,8 +18,8 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision import transforms
 
-from data_loader import SiameseNetworkDataset
-from helpers import (
+from source.data_loader import SiameseNetworkDataset
+from source.helpers import (
     imshow,
     # show_plot,
     UnNormalize)
@@ -36,10 +36,10 @@ args = parser.parse_args()
 
 if args.cpu:
     net = Quadruplet(args.cpu)
-    net.load_state_dict(torch.load('weights/modelsiamesetrip2405.pt', map_location=torch.device('cpu')))
+    net.load_state_dict(torch.load('../data/weights/modelsiamesetrip2405.pt', map_location=torch.device('cpu')))
 else:
     net = Quadruplet().cuda()
-    net.load_state_dict(torch.load('weights/modelsiamesetrip2405.pt'))
+    net.load_state_dict(torch.load('../data/weights/modelsiamesetrip2405.pt'))
 
 transformation = transforms.Compose(
     [transforms.Resize((48,48)),
@@ -56,7 +56,7 @@ logger.setLevel(100)
 un_norm = UnNormalize(mean=(0.485, 0.456, 0.406, 0.440), std=(0.225, 0.225, 0.225, 0.225))
 
 # Locate the test dataset and load it into the SiameseNetworkDataset
-folder_dataset_test = datasets.ImageFolder(root="./testimages")
+folder_dataset_test = datasets.ImageFolder(root="../data/testimages")
 siamese_dataset = SiameseNetworkDataset(imageFolderDataset=folder_dataset_test,
                                         transform=transformation)
 

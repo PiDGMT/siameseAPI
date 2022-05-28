@@ -26,7 +26,7 @@ FLASK_RUN_PORT = getenv("FLASK_RUN_PORT", "5000")
 VERSION = "1.0"
 
 NET = Quadruplet(cpu = True)
-NET.load_state_dict(torch.load('weights/modelsiamesetrip2405.pt', map_location=torch.device('cpu')))
+NET.load_state_dict(torch.load('../data/weights/modelsiamesetrip2405.pt', map_location=torch.device('cpu')))
 
 # TODO: what should the values be for the mean and std?
 TRANSFORMATION = transforms.Compose(
@@ -48,7 +48,7 @@ def siamese_network():
     Parameters
     ----------
     request : incoming request containing two image urls
-
+j
     Example
     -------
     {
@@ -70,22 +70,32 @@ def siamese_network():
 
     except Exception as _e:
         logger.exception(f"Can't load the iamge. {_e}")
+        return {
+            "Error": _e
+        }
 
-    pairwise = Pairwise(image1, image2, transform=TRANSFORMATION)
-    pair = DataLoader(
-        pairwise,
-        num_workers=1,
-        batch_size=1,
-        shuffle=False
-        )
+    try:
+        pairwise = Pairwise(image1, image2, transform=TRANSFORMATION)
+        pair = DataLoader(
+            pairwise,
+            num_workers=1,
+            batch_size=1,
+            shuffle=False
+            )
 
-    dataiter = iter(pair)
-    image1, image2 = next(dataiter)
+        dataiter = iter(pair)
+        image1, image2 = next(dataiter)
 
-    ## Compare the two images
-    (vector1, vector2, _, _) =  NET(image1, image2)
+        ## Compare the two images
+        (vector1, vector2, _, _) =  NET(image1, image2)
 
-    distance = F.pairwise_distance(vector1, vector2)
+        distance = F.pairwise_distance(vector1, vector2)
+
+    except Exception as _e:
+        logger.exception(f"Something went wrong doing the comparison. {_e}")
+        return {
+            "Error": _e
+        }
 
     ## Return the result
     return {

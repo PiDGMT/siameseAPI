@@ -25,19 +25,20 @@ class Pairwise(Dataset):
 #dataloader for getting triplets from dataset
 class SiameseNetworkDataset(Dataset):
     def __init__(self,imageFolderDataset,transform=None):
-        self.imageFolderDataset = imageFolderDataset    
+        self.imageFolderDataset = imageFolderDataset
         self.transform = transform
         
     def __getitem__(self,index):
         #img0_tuple = random.choice(self.imageFolderDataset.imgs)
         img0_tuple = self.imageFolderDataset.imgs[index]
-        #search untille requirements are met (same class)
+
+        #search until requirements are met (same class)
         while True:
           img1_tuple = random.choice(self.imageFolderDataset.imgs)
           if img0_tuple[1] == img1_tuple[1]:
             break
         while True:
-          #search untill they arent the same class
+          #search until they arent the same class
           img2_tuple = random.choice(self.imageFolderDataset.imgs)
           if img0_tuple[1] != img2_tuple[1]:
             break
