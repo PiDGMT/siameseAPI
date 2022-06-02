@@ -26,9 +26,9 @@ FLASK_RUN_PORT = getenv("FLASK_RUN_PORT", "5000")
 VERSION = "1.0"
 
 NET = Quadruplet(cpu = True)
-NET.load_state_dict(torch.load('../data/weights/modelsiamesetrip2405.pt', map_location=torch.device('cpu')))
+NET.load_state_dict(torch.load('../data/weights/modelsiamesequad30.pt', map_location=torch.device('cpu')))
 
-# TODO: what should the values be for the mean and std?
+# TODO: what should the values be for the mean and std? <- Pytorch uses the ones below
 TRANSFORMATION = transforms.Compose(
     [transforms.Resize((48,48)),
     transforms.ToTensor(),
